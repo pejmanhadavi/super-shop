@@ -1,4 +1,7 @@
 <!-- Navigation -->
+
+{% with url_name=request.resolver_match.url_name %}
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
   <div class="container">
     <a class="navbar-brand" href="{% url 'index' %}">Start Bootstrap</a>
@@ -13,7 +16,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item active">
+        <li class="nav-item {%if url_name == 'index' %} active {% endif %}">
           <a class="nav-link" href="{% url 'index' %}">Home
             <span class="sr-only">(current)</span>
           </a>
@@ -23,17 +26,18 @@
           <a class="nav-link text-danger" href="{% url 'logout' %}">Log out</a>
         </li>
         {% else %}
-        <li class="nav-item">
-          <a class="nav-link text-success" href="{% url 'login' %}">Log In</a>
+        <li class="nav-item {%if url_name == 'login' %} active {% endif %}">
+          <a class="nav-link " href="{% url 'login' %}">Log In</a>
         </li>
         {% endif %}
-        <li class="nav-item">
+        <li class="nav-item {%if url_name == '#' %} active {% endif %}">
           <a class="nav-link" href="#">Services</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item {%if url_name == '#' %} active {% endif %}">
           <a class="nav-link" href="#">About</a>
         </li>
       </ul>
     </div>
   </div>
 </nav>
+{% endwith %}
