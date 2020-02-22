@@ -26,15 +26,19 @@
     <div class="container">
 
         <div class="row">
+
             {% include 'partials/_sidebar.html' %}
 
             {% block content %}
 
             {% endblock content %}
-
+            
         </div>
-        {% include 'partials/_footer.html' %}
+        
     </div>
+
+    {% include 'partials/_footer.html' %}
+
 
     <!-- Bootstrap core JavaScript -->
     <script src="{% static 'jquery/jquery.min.js' %}"></script>
