@@ -5,10 +5,12 @@ verify_ssl = true
 
 [dev-packages]
 autopep8 = "*"
+pylint = "*"
 
 [packages]
 django = "*"
 django-crispy-forms = "==1.7.2"
+pillow = "*"
 
 [requires]
 python_version = "3.8"
