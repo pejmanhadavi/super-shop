@@ -1,7 +1,9 @@
 from django.urls import path
 from django.views.generic import TemplateView
 
+from .views import ShopListView,ProductDetailView
+
 urlpatterns = [
-    # path('', TemplateView.as_view(template_name = ))
-    path('<slug:slug>', TemplateView.as_view(template_name='pages/product_detail.html'), name='product-detail'),
+    path('', ShopListView.as_view(), name='index'),
+    path('<slug:slug>', ProductDetailView.as_view() name='product-detail'),
 ]
