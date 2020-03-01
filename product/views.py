@@ -6,7 +6,9 @@ from .models import Category, Product
 
 class ShopListView(ListView):
     model = Product
-    template_name = 'index.html'
+    queryset = Product.objects.order_by("-created_at")
+    template_name = 'pages/index.html'
+    context_object_name = 'products'
 
 
 class ProductDetailView(DetailView):
