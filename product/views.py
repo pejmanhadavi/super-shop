@@ -13,4 +13,4 @@ class ShopListView(ListView):
 
 class ProductDetailView(DetailView):
     model = Product
-    template_name = 'product_detail.html'
+    template_name = 'pages/product_detail.html'
