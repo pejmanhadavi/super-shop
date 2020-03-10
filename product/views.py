@@ -35,7 +35,7 @@ class ProductDetailView(FormMixin, DetailView):
         context = super(ProductDetailView, self).get_context_data(**kwargs)
         slug = self.kwargs['slug']        
         context.update({
-            'category_list': Category.objects.order_by('name'),
+            'categories': Category.objects.order_by('name'),
             'review_list': Review.objects.filter(product = self.object.id),
             'review_form': ReviewForm(initial={'product': self.object.id })
         })        
@@ -55,7 +55,7 @@ class ProductDetailView(FormMixin, DetailView):
     def form_valid(self, form):
         review = Review()
         review.product = self.object
-        review.author = form.cleaned_data['author']
+        review.author = self.request.user.username
         review.review = form.cleaned_data['review']
         review.save()
         messages.success(self.request, _('Your review submited successfuly!'))
