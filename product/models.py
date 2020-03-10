@@ -40,4 +40,43 @@ class Product(models.Model):
 
 
     def get_absolute_url(self):
-        return reverse('product', args=[str(self.slug)])        
+        return reverse('product', args=[str(self.slug)])       
+
+
+class Review(models.Model):
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        blank = False,
+        null = False,
+        verbose_name=_('product'))
+
+
+    author = models.CharField(
+        max_length=128,
+        blank=False,
+        null=False,
+        verbose_name=_('author'))
+
+    review = models.TextField(
+        max_length=512,
+        blank=False,
+        null=False,
+        verbose_name=_('review'))
+
+    created_at = models.DateTimeField(
+        blank=False,
+        null=False,
+        auto_now_add=True,
+        verbose_name=_('created at'))        
+
+          
+    class Meta:
+        verbose_name = _('review')
+        verbose_name_plural = _('reviews')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.review

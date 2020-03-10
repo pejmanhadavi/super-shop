@@ -1,5 +1,7 @@
 {% extends '_base.html' %}
 
+{% load crispy_forms_tags %}
+
 {% block content %}
 <div class="col-lg-9">
 
@@ -19,25 +21,22 @@
 
     <div class="card card-outline-secondary my-4">
         <div class="card-header">
-            Product Reviews
+            {{product.name}} Reviews
         </div>
         <div class="card-body">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique
-                necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia,
-                necessitatibus quae sint natus.</p>
-            <small class="text-muted">Posted by Anonymous on 3/1/17</small>
+            {% for review in review_list %}
+            <p>{{review.review}}</p>
+            <small class="text-muted">Posted by {{review.author}} on {{review.created_at}}</small>
             <hr>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique
-                necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia,
-                necessitatibus quae sint natus.</p>
-            <small class="text-muted">Posted by Anonymous on 3/1/17</small>
-            <hr>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique
-                necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia,
-                necessitatibus quae sint natus.</p>
-            <small class="text-muted">Posted by Anonymous on 3/1/17</small>
-            <hr>
+            {% endfor %}
             <a href="#" class="btn btn-success">Leave a Review</a>
+            <form action="{{ product.get_absolute_ur }}" method='post'>
+                <div class="form-group">
+                    {% csrf_token %}
+                    {{ review_form|crispy }}
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
         </div>
     </div>
     <!-- /.card -->
