@@ -11,12 +11,16 @@ class Category(models.Model):
     class Meta:
         verbose_name = _('category')
         verbose_name_plural = _('categories')
+        indexes = [
+            models.Index(fields=['name', 'slug'], name='category_index'),
+        ]
+        ordering = ['name']        
 
     def __str__(self):
         return self.name
     
     def get_absolute_url(self):
-        return reverse('category', args=[str(self.slug)])
+        return reverse('category_list', args=[str(self.slug)])
 
 
 class Product(models.Model):
@@ -29,7 +33,7 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True, blank=True, verbose_name=_('updated_at'))
     off = models.IntegerField(blank=True, null=True, default=0, verbose_name=_('off'))
     number = models.IntegerField( default=1, verbose_name=_('number'))
-    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, verbose_name=_('category'))
+    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, related_name='products', verbose_name=_('category'))
 
     class Meta:
         verbose_name = _('product')

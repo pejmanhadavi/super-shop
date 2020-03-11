@@ -66,14 +66,22 @@ class ProductDetailView(FormMixin, DetailView):
         return super(ProductDetailView, self,).form_invalid(form)
 
 class CategoryList(ListView):
-    model = Category
+    model = Product
     template_name = 'pages/index.html'
-    context_object_name = 'categories'
-    queryset = Category.objects.order_by('name')  
+    context_object_name = 'products'
+    queryset = Category.objects.order_by('name') 
 
+     
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super(CategoryList, self).get_context_data(**kwargs)
-        # Add in the publisher
         context['categories'] = Category.objects.order_by('name')  
         return context  
+
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = Product.objects.all()
+        slug = self.kwargs['slug']
+        if slug:
+            category = Category.objects.filter(slug=slug).first()
+            queryset = queryset.filter(category=category.id)
+        return queryset    
