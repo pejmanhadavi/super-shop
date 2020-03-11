@@ -16,6 +16,7 @@ class ShopListView(ListView):
     queryset = Product.objects.order_by("-created_at")
     template_name = 'pages/index.html'
     context_object_name = 'products'
+    paginate_by = 6
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
