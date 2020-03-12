@@ -19,9 +19,7 @@ class ShopListView(ListView):
     paginate_by = 6
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super(ShopListView, self).get_context_data(**kwargs)
-        # Add in the publisher
         context['categories'] = Category.objects.order_by('name')  
         return context  
 
@@ -86,3 +84,21 @@ class CategoryList(ListView):
             category = Category.objects.filter(slug=slug).first()
             queryset = queryset.filter(category=category.id)
         return queryset    
+
+
+
+class SearchResultsListView(ListView): 
+    model = Product 
+    context_object_name = 'products' 
+    template_name = 'pages/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchResultsListView, self).get_context_data(**kwargs)
+        context['categories'] = Category.objects.order_by('name')  
+        return context  
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        return Product.objects.filter(
+            Q(name__icontains=query)
+        )

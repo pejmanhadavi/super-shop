@@ -1,7 +1,21 @@
 <div class="col-lg-3">
 
   <h1 class="my-4">Super SHOP</h1>
+  <div class="card my-4">
+    <h5 class="card-header">Search</h5>
+    <div class="card-body">
+        <form action="{% url 'search_results' %}" method="get">
+            <div class="input-group">
+                <input name="q" type="text" class="form-control" placeholder="Product Name">
+                <span class="input-group-btn">
+                    <button class="btn btn-secondary">Go!</button>
+                </span>
+            </div>
+        </form>
+    </div>
+</div>
   <div class="list-group">
+    <h5 class="card-header">Categories</h5>
     <a href="{% url 'index' %}" class="list-group-item">All</a>
     {% if categories %}
       {% for category in categories %}
