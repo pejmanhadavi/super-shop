@@ -9,8 +9,9 @@ pylint = "*"
 
 [packages]
 django = "*"
-django-crispy-forms = "==1.7.2"
+django-crispy-forms = "==1.8.1"
 pillow = "*"
+django-debug-toolbar = "==2.0"
 
 [requires]
 python_version = "3.8"

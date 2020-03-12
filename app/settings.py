@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     # 3th party
     'crispy_forms',
+    'debug_toolbar',
     
     # local
     'core.apps.CoreConfig',
@@ -57,6 +58,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
+
+INTERNAL_IPS = [    
+    '127.0.0.1',
 ]
 
 ROOT_URLCONF = 'app.urls'
