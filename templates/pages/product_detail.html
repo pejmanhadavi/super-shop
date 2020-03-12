@@ -14,7 +14,10 @@
             <span class="text">number : {{product.number}}</span><br>
             <span class="text">create time : {{product.created_at}}</span><br>
             <span class="text">off : {{product.off}} %</span><br>
-            <span class="text">Category : {{product.category}}</span><br>
+            <span class="text">Category : {{product.category}}</span><br><br>
+            {% if user.is_authenticated %}
+            <a href="" class="btn btn-success">Add to basket</a>
+            {% endif %}
         </div>
     </div>
     <!-- /.card -->
@@ -29,7 +32,7 @@
             <small class="text-muted">Posted by {{review.author}} on {{review.created_at}}</small>
             <hr>
             {% endfor %}
-            <a href="#" class="btn btn-success">Leave a Review</a>
+            <a href="#" class="text">Leave a Review</a>
             {% if user.is_authenticated %}
             <form action="{{ product.get_absolute_ur }}" method='post'>
                 <div class="form-group">
