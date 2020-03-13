@@ -1,0 +1,147 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Shop Homepage - Start Bootstrap Template</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'style.css' %}" rel="stylesheet">
+
+</head>
+
+<!-- Navigation -->
+{% load static %}
+{% load cart_template_tags %}
+{% with url_name=request.resolver_match.url_name %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'index' %}">Super SHOP</a>
+    {% if user.is_authenticated %}
+        <p class="text-success">Hi {{ user.username }}!</p>
+      {% else %}
+      <p class="text-danger">You are not logged in.</p>
+      {% endif %}
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+      aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item {%if url_name == 'index' %} active {% endif %}">
+          <a class="nav-link" href="{% url 'index' %}">Home
+            <span class="sr-only">(current)</span>
+          </a>
+        </li>
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link text-danger" href="{% url 'logout' %}">Log out</a>
+        </li>
+        {% else %}
+        <li class="nav-item {%if url_name == 'login' %} active {% endif %}">
+          <a class="nav-link " href="{% url 'login' %}">Log In</a>
+        </li>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'basket-items' %}"><img src="{% static 'img/basket.png' %}" alt=""> {{ request.user|cart_item_count }} </a>
+        </li>
+        {% endif %}
+        <li class="nav-item {%if url_name == '#' %} active {% endif %}">
+          <a class="nav-link" href="#">About</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+{% endwith %}
+
+<body>
+    
+
+<main>
+    <div class="container">
+
+    <div class="table-responsive text-nowrap">
+    <h2>Basket items</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Item title</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Total Item Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for basket_item in object.products.all %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ basket_item.product.name }}</td>
+            <td>{{ basket_item.product.price }}</td>
+            <td>
+                <a href="{% url 'remove-single-item-from-cart' basket_item.product.slug %}"><img src="{% static 'img/minus.png' %}" alt=""></a>
+                {{ basket_item.quantity }}
+                <a href="{% url 'add-single-item-to-cart' basket_item.product.slug %}"><img src="{% static 'img/plus.png' %}" alt=""></a>
+            </td>
+            <td>
+                ${{ basket_item.get_total_item_price }}
+            <a style='color: red;' href="{% url 'remove-from-cart' basket_item.product.slug %}">
+                <img src="{% static 'img/delete.png' %}" alt="">
+            </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan='5'>Your cart is empty</td>
+        </tr>
+        <tr>
+            <td colspan="5">
+            <a class='btn btn-primary float-right' href="{% url 'index' %}">Continue shopping</a>
+            </td>
+        </tr>
+        {% endfor %}
+        {% if object.get_total %}
+        <tr>
+            <td colspan="4"><b>Order Total</b></td>
+            <td><b>${{ object.get_total }}</b></td>
+        </tr>
+        <tr>
+            <td colspan="5">
+            <a class='btn btn-warning float-right ml-2' href='#'>Proceed to checkout</a>
+            <a class='btn btn-primary float-right' href="{% url 'index' %}">Continue shopping</a>
+            </td>
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+    </div>
+
+    </div>
+  </main>
+
+<!-- Footer -->
+<footer class="py-3 bg-dark" style="margin-top: 50px;">
+    <div class="container">
+      <p class="m-0 text-center text-white" id="main_footer">Copyright &copy; Super Shop</p>
+    </div>
+    <!-- /.container -->
+  </footer>
+
+</body>
+
+</html>

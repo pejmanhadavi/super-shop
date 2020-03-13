@@ -1,12 +1,17 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView 
+from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import render, get_object_or_404
+from django.views.generic import (ListView, DetailView, View)  
 from django.views.generic.edit import FormMixin
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
 
-from .models import Category, Product, Review
+from .models import (Category, Product, Review, BasketItem, Basket)
 
 from .forms import ReviewForm
 
@@ -22,6 +27,19 @@ class ShopListView(ListView):
         context = super(ShopListView, self).get_context_data(**kwargs)
         context['categories'] = Category.objects.order_by('name')  
         return context  
+
+
+class BasketItemsView(LoginRequiredMixin, View):
+    def get(self, *args, **kwargs):
+        try:
+            basket = Basket.objects.get(user=self.request.user, ordered=False)
+            context = {
+                'object': basket
+            }
+            return render(self.request, 'pages/basket_items.html', context)
+        except ObjectDoesNotExist:
+            messages.error(self.request, 'You do not have active basket :( ')
+            return redirect('/')            
 
 
 class ProductDetailView(FormMixin, DetailView):
@@ -102,3 +120,122 @@ class SearchResultsListView(ListView):
         return Product.objects.filter(
             Q(name__icontains=query)
         )
+
+
+@login_required
+def add_to_cart(request, slug):
+    product = get_object_or_404(Product, slug=slug)
+    basket_item, created = BasketItem.objects.get_or_create(
+        product=product,
+        user=request.user,
+        ordered=False
+    )
+    basket_qs = Basket.objects.filter(user = request.user, ordered=False) #qs = queryset
+    if basket_qs.exists():
+        basket = basket_qs[0]
+        # Check if the basket item is in the basket
+        if basket.products.filter(product__slug=product.slug).exists():
+            basket_item.quantity += 1
+            basket_item.save()
+            messages.info(request, 'this item quantity was updated !')
+            return redirect('product_detail', slug=slug)    
+        else:
+            basket.products.add(basket_item)
+            messages.info(request, 'This item was added to your cart :)')
+            return redirect('product_detail', slug=slug)   
+             
+    else:
+        basket = Basket.objects.create(user=request.user)
+        basket.products.add(basket_item)
+        messages.info(request, 'This item was added to your cart :)')
+        return redirect('product_detail', slug=slug)    
+
+
+@login_required
+def add_single_item_to_cart(request, slug):
+    product = get_object_or_404(Product, slug=slug)
+    basket_item, created = BasketItem.objects.get_or_create(
+        product=product,
+        user=request.user,
+        ordered=False
+    )
+    basket_qs = Basket.objects.filter(user = request.user, ordered=False) #qs = queryset
+    if basket_qs.exists():
+        basket = basket_qs[0]
+        # Check if the basket item is in the basket
+        if basket.products.filter(product__slug=product.slug).exists():
+            basket_item.quantity += 1
+            basket_item.save()
+            messages.info(request, 'this item quantity was updated !')
+            return redirect('basket-items')    
+        else:
+            basket.products.add(basket_item)
+            messages.info(request, 'This item was added to your cart :)')
+            return redirect('basket-items')   
+             
+    else:
+        basket = Basket.objects.create(user=request.user)
+        basket.products.add(basket_item)
+        messages.info(request, 'This item was added to your cart :)')
+        return redirect('basket-items')    
+
+
+
+@login_required
+def remove_from_cart(request, slug):
+    product = get_object_or_404(Product, slug=slug)
+    basket_qs = Basket.objects.filter(
+        user=request.user,
+        ordered = False
+    )
+    if basket_qs.exists():
+        basket = basket_qs[0]
+        # Check if the basket item is in the basket
+        if basket.products.filter(product__slug=product.slug).exists():
+            basket_item = BasketItem.objects.filter(
+                product=product,
+                user=request.user,
+                ordered=False
+            )[0]
+            basket.products.remove(basket_item)
+            messages.info(request, 'This item was removed from your cart :(')
+            return redirect('basket-items') 
+        else:
+            messages.info(request, 'This item was not in your cart !')
+            return redirect('product_detail', slug=slug)    
+    else:
+        messages.info(request, 'You do not have an active order !')
+        return redirect('product_detail', slug=slug)
+               
+
+
+@login_required
+def remove_single_item_from_cart(request, slug):
+    product = get_object_or_404(Product, slug=slug)
+    basket_qs = Basket.objects.filter(
+        user=request.user,
+        ordered = False
+    )
+    if basket_qs.exists():
+        basket = basket_qs[0]
+        # Check if the basket item is in the basket
+        if basket.products.filter(product__slug=product.slug).exists():
+            basket_item = BasketItem.objects.filter(
+                product=product,
+                user=request.user,
+                ordered=False
+            )[0]
+            if basket_item.quantity > 1 :
+                basket_item.quantity -= 1
+                basket_item.save()
+            else:
+                basket.products.remove(basket_item) 
+            messages.info(request, 'This quantity was updated !')
+            return redirect('basket-items') 
+        else:
+            messages.info(request, 'This item was not in your cart !')
+            return redirect('product_detail', slug=slug)    
+    else:
+        messages.info(request, 'You do not have an active order !')
+        return redirect('product_detail', slug=slug)
+               

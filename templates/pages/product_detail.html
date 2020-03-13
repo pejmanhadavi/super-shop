@@ -16,7 +16,8 @@
             <span class="text">off : {{product.off}} %</span><br>
             <span class="text">Category : {{product.category}}</span><br><br>
             {% if user.is_authenticated %}
-            <a href="" class="btn btn-success">Add to basket</a>
+            <a href="{{ object.get_add_to_cart_url }}" class="btn btn-success">Add to basket</a>
+            <a href="{{ object.get_remove_from_cart_url }}" class="btn btn-danger">Remove from basket</a>
             {% endif %}
         </div>
     </div>

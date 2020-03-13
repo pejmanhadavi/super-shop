@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 from datetime import datetime
-
+from django.conf import settings
 
 class Category(models.Model):
     name = models.CharField(max_length=150, unique=True, blank=False, null=False, verbose_name=_('name'))
@@ -46,6 +46,11 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse('product', args=[str(self.slug)])       
 
+    def get_add_to_cart_url(self):
+        return reverse('add-to-cart', args=[str(self.slug)])   
+
+    def get_remove_from_cart_url(self):
+        return reverse('remove-from-cart', args=[str(self.slug)])  
 
 class Review(models.Model):
 
@@ -84,3 +89,59 @@ class Review(models.Model):
 
     def __str__(self):
         return self.review
+
+
+class BasketItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+        )
+    ordered = models.BooleanField(default=False)        
+    
+    def __str__(self):
+        return f"{self.quantity} of {self.product.name}"
+
+    
+    def get_total_item_price(self):
+        return self.quantity * self.product.price
+
+
+    def get_final_price(self):
+        return self.get_total_item_price()
+        
+
+class Basket(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE)
+
+    products = models.ManyToManyField(BasketItem)
+    ordered = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.username    
+
+
+    def get_total(self):
+        total = 0
+        for basket_item in self.products.all():
+            total += basket_item.get_final_price()
+        return total    
+
+
+# class Basket(models.Model):
+
+#     user = models.ForeignKey(
+#         settings.AUTH_USER_MODEL,
+#         on_delete=models.CASCADE,
+#         related_name='basket',
+#         verbose_name=_('user'))
+
+#     product = models.ManyToManyField(
+#         Product,
+#         related_name='baskets',
+#         blank = False,
+#         null = False,
+#         verbose_name=_('product'))
