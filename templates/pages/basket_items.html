@@ -1,75 +1,8 @@
-
+{% extends '_base.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Shop Homepage - Start Bootstrap Template</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="{% static 'style.css' %}" rel="stylesheet">
-
-</head>
-
-<!-- Navigation -->
-{% load static %}
-{% load cart_template_tags %}
-{% with url_name=request.resolver_match.url_name %}
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-  <div class="container">
-    <a class="navbar-brand" href="{% url 'index' %}">Super SHOP</a>
-    {% if user.is_authenticated %}
-        <p class="text-success">Hi {{ user.username }}!</p>
-      {% else %}
-      <p class="text-danger">You are not logged in.</p>
-      {% endif %}
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-      aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item {%if url_name == 'index' %} active {% endif %}">
-          <a class="nav-link" href="{% url 'index' %}">Home
-            <span class="sr-only">(current)</span>
-          </a>
-        </li>
-        {% if user.is_authenticated %}
-        <li class="nav-item">
-          <a class="nav-link text-danger" href="{% url 'logout' %}">Log out</a>
-        </li>
-        {% else %}
-        <li class="nav-item {%if url_name == 'login' %} active {% endif %}">
-          <a class="nav-link " href="{% url 'login' %}">Log In</a>
-        </li>
-        {% endif %}
-        {% if user.is_authenticated %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'basket-items' %}"><img src="{% static 'img/basket.png' %}" alt=""> {{ request.user|cart_item_count }} </a>
-        </li>
-        {% endif %}
-        <li class="nav-item {%if url_name == '#' %} active {% endif %}">
-          <a class="nav-link" href="#">About</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
-{% endwith %}
-
-<body>
-    
+{% block content %}
 
 <main>
     <div class="container">
@@ -134,14 +67,4 @@
     </div>
   </main>
 
-<!-- Footer -->
-<footer class="py-3 bg-dark" style="margin-top: 50px;">
-    <div class="container">
-      <p class="m-0 text-center text-white" id="main_footer">Copyright &copy; Super Shop</p>
-    </div>
-    <!-- /.container -->
-  </footer>
-
-</body>
-
-</html>
+  {% endblock content %}

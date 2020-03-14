@@ -34,12 +34,14 @@ class BasketItemsView(LoginRequiredMixin, View):
         try:
             basket = Basket.objects.get(user=self.request.user, ordered=False)
             context = {
-                'object': basket
+                'object': basket,
+                'categories' : Category.objects.order_by('name')  
             }
             return render(self.request, 'pages/basket_items.html', context)
         except ObjectDoesNotExist:
             messages.error(self.request, 'You do not have active basket :( ')
             return redirect('/')            
+  
 
 
 class ProductDetailView(FormMixin, DetailView):
@@ -56,7 +58,7 @@ class ProductDetailView(FormMixin, DetailView):
             'review_list': Review.objects.filter(product = self.object.id),
             'review_form': ReviewForm(initial={'product': self.object.id })
         })        
-        return context  
+        return context
 
     def get_success_url(self):
         return reverse('product_detail', kwargs={'slug': self.object.slug})

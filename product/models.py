@@ -130,18 +130,3 @@ class Basket(models.Model):
             total += basket_item.get_final_price()
         return total    
 
-
-# class Basket(models.Model):
-
-#     user = models.ForeignKey(
-#         settings.AUTH_USER_MODEL,
-#         on_delete=models.CASCADE,
-#         related_name='basket',
-#         verbose_name=_('user'))
-
-#     product = models.ManyToManyField(
-#         Product,
-#         related_name='baskets',
-#         blank = False,
-#         null = False,
-#         verbose_name=_('product'))
