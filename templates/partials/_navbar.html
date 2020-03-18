@@ -36,8 +36,8 @@
           <a class="nav-link" href="{% url 'basket-items' %}"><img src="{% static 'img/basket.png' %}" alt=""> {{ request.user|cart_item_count }} </a>
         </li>
         {% endif %}
-        <li class="nav-item {%if url_name == '#' %} active {% endif %}">
-          <a class="nav-link" href="#">About</a>
+        <li class="nav-item {%if url_name == 'contact' %} active {% endif %}">
+          <a class="nav-link" href="{% url 'contact' %}">Contact us</a>
         </li>
       </ul>
     </div>
